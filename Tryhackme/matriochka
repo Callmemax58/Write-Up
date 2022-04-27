@@ -26,7 +26,6 @@ import zipfile
 import os
 origin = "matriochka.corv"
 file1 = origin
-i = 0
 while(True):
     os.system('cat '+file1+' | base64 -d > temptry')
     if zipfile.is_zipfile("temptry"):
