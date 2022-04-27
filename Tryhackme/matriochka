@@ -1,0 +1,50 @@
+On se retrouve avec un fichier : matriochka.corv
+
+On cat dessus, on fait quelques test, on se rend compte que c'est du base 64 après cette commande :
+
+cat matriochka.corv | base64 -d 
+
+On veut savoir quel type de fichier c'est donc : 
+
+cat matriochka.corv | base64 -d > test; file test 
+
+On obtient : 
+
+test: Zip archive data, at least v2.0 to extract, compression method=deflate
+
+Donc, derrière, on fait un :
+
+unzip test
+
+Archive:  test
+  inflating: matriochka.txt.txt
+
+Et quand on fait un cat sur ce fichier, on obtient quelque chose de similaire à ce que l'on avait initialement, alors, refaisons la même chose. On obtient le même résultat, plusieurs fois. Faisons le en python en trichant un peu (clairement, je suis entre le bash et le python, la simplicité du bash pour les commande faites précédèment, le python pour tester si c'est un zip, mais passons):
+
+
+import zipfile
+import os
+origin = "matriochka.corv"
+file1 = origin
+i = 0
+while(True):
+    os.system('cat '+file1+' | base64 -d > temptry')
+    if zipfile.is_zipfile("temptry"):
+        os.system("unzip temptry;mv matriochka.txt.txt matriochka.corv")
+    else:
+        print("flag!")
+        os.system("cat matriochka.corv")
+        break
+
+Résultat :
+...
+Archive:  temptry
+  inflating: matriochka.txt.txt      
+Archive:  temptry
+  inflating: matriochka.txt.txt      
+Archive:  temptry
+ extracting: matriochka.txt.txt      
+base64: entrée incorrecte
+flag!
+THM{h0p3_y0ur_n0t_cr4zy_y3t}
+
